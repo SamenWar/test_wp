@@ -1,0 +1,7 @@
+/*
+Theme Name: twentyseventeen-child
+Template: twentyseventeen
+*/
+
+/* импортируем стили родительской темы */
+@import url("../twentyseventeen/style.css");
