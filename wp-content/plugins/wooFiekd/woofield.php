@@ -36,7 +36,7 @@ function art_woo_add_custom_fields() {
 		]
 	);
 
-	// Чекбокс.
+
 	
 	echo '</div>'; // Закрывающий тег Группировки полей
 	// Выбор товаров.
@@ -97,7 +97,7 @@ function art_woo_add_custom_fields() {
                 style="width: 15.75%;margin-right: 2%;"/>
 
         <span class="description">
-		    	<button type="button" id="removeImg" class="button">Удалить картинку</button>
+		    	<button type="button" id="removeImg" class="delete-button button"data-id="<?php echo $post->ID?>">Удалить картинку</button>
 		</span>
 
     </p>
@@ -110,61 +110,95 @@ function art_woo_add_custom_fields() {
             <button type="button" class="clear-button button button-primary button-large">Очистить поля</button>
         </p>
     </div>
-<script>
-    jQuery(document).ready( function( $ ){
-        var data = {
-            action: 'my_action',
-            whatever: 1234
-        };
-
-        // с версии 2.8 'ajaxurl' всегда определен в админке
-        jQuery.post( ajaxurl, data, function( response ){
-            alert( 'Получено с сервера: ' + response );
-        } );
-    } );
-
-    document.querySelectorAll(".clear-button")
-        .forEach(function (elem) {
-            elem.onclick = function (e) {
-
-                let selector = this.dataset.clearSelector;
-                document.querySelectorAll(selector)
-                    .forEach(function (item) {
-                        item.value = "";
-
-                    });
+    <script>
+        jQuery(document).ready( function( $ ){
+            var data = {
+                action: 'my_action',
+                whatever: 1234
             };
+
+            // с версии 2.8 'ajaxurl' всегда определен в админке
+            jQuery.post( ajaxurl, data, function( response ){
+                alert( 'Получено с сервера: ' + response );
+            } );
+        } );
+
+        document.querySelectorAll(".clear-button")
+            .forEach(function (elem) {
+                elem.onclick = function (e) {
+
+                    let selector = this.dataset.clearSelector;
+                    document.querySelectorAll(selector)
+                        .forEach(function (item) {
+                            item.value = "";
+
+                        });
+                };
+            });
+
+
+        //save-buttob
+        document.querySelectorAll(".save-button").
+        jQuery(document).ready( function( $ ) {
+            var data = {
+                action: 'CallOfHook',
+            };
+
+
+            jQuery.post(ajaxurl, data, function () {
+                alert('Все ок!');
+            });
         });
 
 
-    //save-buttob
-    document.querySelectorAll(".save-button")
-    jQuery(document).ready( function( $ ){
-        var data = {
-            action: 'CallOfHook',
-        };
+        document.querySelectorAll(".delete-button").
+        jQuery(document).ready( function( $ ) {
+            var data = {
+                action: 'deim',
+                data: [
+                     data-id
+                    ]
+            };
 
 
-        jQuery.post( ajaxurl, data, function(){
-            alert( 'Все ок!');
-        } );
-    } );</script>
+            jQuery.post(ajaxurl, data, function () {
+                alert('Все ок!');
+            });
+        });
+    </script>
     <?php
 
     // save
 	require_once('save.php');
+	require_once('output.php');
 
 
 
-    add_action('цз_фофч_CallOfHook', 'saveForm');
+    add_action('wp_ajax_CallOfHook', 'saveForm');
     }
     function saveForm(){
         do_action('woocommerce_process_product_meta');
     }
 
 
-
-    admin_enqueue_script('clear', plugins_url() . 'clear.js', array('jquery'));
-
+    add_action('wp_aaax_deimk', 'deleteImage');
 
 
+    function deleteImage(){
+        $postId = $_POST['data_id'];
+        wp_delete_object_term_relationships( $postId, 'image' );
+
+    }
+
+
+    function IncScript() {
+	    wp_enqueue_scripts( 'Scripts', plugins_url() . 'Scripts.js', array( 'jquery' ) );
+    }
+    add_action('admin_enqueue_scripts', 'IncScript');
+
+
+
+function deleteImg($object_id){
+
+	wp_delete_object_term_relationships( $object_id, 'img' );
+}
